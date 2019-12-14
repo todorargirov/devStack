@@ -4,6 +4,7 @@
     "description": "firefly-server framework",
     "main": "src/index.js",
     "dependencies": {
+        "dotenv": "^8.2.0",
         "fastify": "^2.11.0"
     },
     "devDependencies": {
@@ -12,8 +13,9 @@
         "pretty-quick": "^2.0.1"
     },
     "scripts": {
-        "start": "node .",
-        "prettier": "npx prettier --write src/*",
+        "start": "node src/main.js",
+        "dev": "nodemon src/main.js",
+        "prettier": "npx prettier --write src/**/*",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "husky": {
