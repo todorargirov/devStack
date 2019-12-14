@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 function start() {
+    // Initialize app
     const fastify = require('fastify')({ logger: true })
     const routes = require('./routes/routes')
 
