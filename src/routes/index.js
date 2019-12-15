@@ -29,6 +29,10 @@ function initializeEndpoint(fastify, routeParams) {
                 // pre_ and on_ functions run according to lifeCycle. Can be an Array [func1, func2]
                 onRequest: routeParam.onRequest || [],
 
+                onSend: routeParam.onSend || [],
+
+                onResponse: routeParam.onResponse || [],
+
                 preParsing: routeParam.preParsing || [],
 
                 preValidation: routeParam.preValidation || [],
@@ -37,25 +41,21 @@ function initializeEndpoint(fastify, routeParams) {
 
                 preSerialization: routeParam.preSerialization || [],
 
-                onSend: routeParam.onSend || [],
+                //attachValidation: routeParam.attachValidation || {},
 
-                onResponse: routeParam.onResponse || [],
+                //schemaCompiler: routeParam.schemaCompiler || {},
 
-                attachValidation: routeParam.attachValidation || {},
+                //bodyLimit: routeParam.bodyLimit || 1048576,
 
-                schemaCompiler: routeParam.schemaCompiler || {},
+                //logLevel: routeParam.logLevel || {},
 
-                bodyLimit: routeParam.bodyLimit || 1048576,
-
-                logLevel: routeParam.logLevel || {},
-
-                logSerializers: routeParam.logSerializers || {},
+                //logSerializers: routeParam.logSerializers || {},
 
                 config: routeParam.config || {},
 
-                version: routeParam.version || 'dev',
+                //version: routeParam.version || 'dev',
 
-                prefixTrailingSlash: routeParam.prefixTrailingSlash || '',
+                //prefixTrailingSlash: routeParam.prefixTrailingSlash || '',
             })
             fastify.log.info(`Initialized Endpoint => ${m}:${routeParam.url}`)
         })
