@@ -1,8 +1,8 @@
-const { query } = require('../db/pg');
+const { getPingService } = require('../services/pingService');
 
 const url = '/ping';
 
-const routeParams = {
+const pingRoutes = {
     methods: ['GET', 'POST'],
     url: url,
     schema: {
@@ -38,12 +38,14 @@ const routeParams = {
     },
     */
     handler: async (request, reply) => {
-        request.log.info(`Query: ${JSON.stringify(request.query)}`);
-        const res = await query('SELECT NOW() as now');
-        reply.send({
-            rowCount: res.rowCount,
-            rows: res.rows,
-        });
+        // in the handler, log the incoming request
+        //request.log.info(`Query: ${JSON.stringify(request.query)}`);
+        // then, take what params are needed and pass to the service
+        //const params = {};
+        // wait for the service processing
+        const res = await getPingService();
+        //send the reply
+        reply.send(res);
     },
     /*
     preSerialization: (request, reply, payload, done) => {
@@ -63,4 +65,4 @@ const routeParams = {
     */
 };
 
-module.exports = [routeParams];
+module.exports = [pingRoutes];
