@@ -1,4 +1,5 @@
 require('dotenv').config();
+const db = require('./db/pg');
 
 function start() {
     // Initialize app
@@ -6,15 +7,16 @@ function start() {
     const routes = require('./routes');
 
     // Initialize db
-    fastify
-        .register(require('fastify-postgres'), {
-            connectionString: process.env.DB_CONNSTRING,
-        })
-        .after(err => {
-            if (err) {
-                throw err;
-            }
-        });
+    (async () => {
+        const client = await db.getClient();
+        let res = null;
+        try {
+            res = await client.query('SELECT * from ff_users where id = $1', [1]);
+            fastify.log.info('DB Result ', res.rows);
+        } finally {
+            client.release();
+        }
+    })();
 
     // Initialize routes
     fastify.register(routes).after(err => {

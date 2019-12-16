@@ -1,3 +1,5 @@
+const db = require('../db/pg');
+
 const url = '/ping';
 
 const routeParams = {
@@ -42,10 +44,18 @@ const routeParams = {
         done()
     },
     */
-    handler: (request, reply) => {
+    handler: async (request, reply) => {
         request.log.info(`Query: ${JSON.stringify(request.query)}`);
+        const client = await db.getPool().connect();
+        let res = null;
+        try {
+            res = await client.query('SELECT * from ff_users where id = $1', [1]);
+            request.log.info('DB Result ', res.rows);
+        } finally {
+            client.release();
+        }
 
-        reply.send({ value: 'Pong!' });
+        reply.send({ value: res.rows[0].username });
     },
     /*
     preSerialization: (request, reply, payload, done) => {
