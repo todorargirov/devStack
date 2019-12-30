@@ -1,4 +1,5 @@
 const ping = require('./ping');
+const users = require('./users');
 
 /**
  * This function initializes endpoints based on the full route declaration. One endpoint per REST method.
@@ -59,13 +60,7 @@ function initializeEndpoint(fastify, routeParams) {
 
 async function routes(fastify) {
     initializeEndpoint(fastify, ping);
-
-    fastify.get('/users/:id', async (request, reply) => {
-        const client = await fastify.pg.connect();
-        const { rows } = await client.query('SELECT * FROM ff_users where id=$1', [request.params.id]);
-        client.release();
-        reply.send(rows);
-    });
+    initializeEndpoint(fastify, users);
 }
 
 module.exports = routes;

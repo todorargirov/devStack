@@ -60,7 +60,7 @@ async function queryByClient(queryString, queryParams) {
     }
 
     callCount++;
-    logger.debug('Database Call Count: ', callCount);
+    logger.debug('Database Call Count: *** ', callCount, '  ***');
     logger.info(
         `Query: '${queryString}'; Params: ${queryParams || '[]'}; Result: ${JSON.stringify(
             res.rows
