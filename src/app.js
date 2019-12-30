@@ -1,20 +1,33 @@
-require('dotenv').config()
+require('dotenv').config();
+const db = require('./db/pg');
 
 function start() {
-    const fastify = require('fastify')({ logger: true })
-    const routes = require('./routes/routes')
+    // Initialize app
+    const fastify = require('fastify')({ logger: { level: 'debug' } });
+    const routes = require('./routes');
 
-    fastify.register(routes)
+    // Initialize db
+    db.init(fastify.log);
+
+    // Initialize routes
+    fastify.register(routes).after(err => {
+        if (err) {
+            throw err;
+        }
+    });
+
+    fastify.ready(() => {
+        console.log(fastify.printRoutes());
+    });
 
     fastify.listen(process.env.PORT, process.env.HOST, (err, address) => {
         if (err) {
-            fastify.log.error(err)
-            process.exit(1)
+            fastify.log.error(err);
+            process.exit(1);
         }
-        fastify.log.info(`Server started on ${address}`)
-    })
+    });
 }
 
 module.exports = {
     start: start,
-}
+};
