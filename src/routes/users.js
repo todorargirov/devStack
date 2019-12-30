@@ -65,7 +65,7 @@ const userRoutes = {
             reply.send(res);
         } else {
             reply.code(401);
-            reply.send({ success: false, data: '401 Unauthorized' })
+            reply.send({ success: false, data: '401 Unauthorized' });
         }
     },
     /*
