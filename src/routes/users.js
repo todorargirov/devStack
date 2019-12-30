@@ -1,7 +1,7 @@
-const { getUser } = require('../services/userService');
+const { getUserInfo } = require('../services/userService');
 const authService = require('../services/authService');
 
-const url = '/users/:id';
+const url = '/users/:username';
 
 const userRoutes = {
     methods: ['GET'],
@@ -27,10 +27,11 @@ const userRoutes = {
 
     onRequest: (request, reply, done) => {
         const res = authService.checkRequest(request);
-        console.log(res);
         if (res.success === false) {
             reply.code(401);
             reply.send(res);
+        } else {
+            request.tokenPayload = res.data;
         }
         done();
     },
@@ -56,9 +57,16 @@ const userRoutes = {
         // then, take what params are needed and pass to the service
         //const params = {};
         // wait for the service processing
-        const res = await getUser(request, reply);
-        //send the reply
-        reply.send(res);
+
+        // check the token info vs the params
+        if (request.tokenPayload.username === request.params.username) {
+            const res = await getUserInfo(request.params.username);
+            //send the reply
+            reply.send(res);
+        } else {
+            reply.code(401);
+            reply.send({ success: false, data: '401 Unauthorized' })
+        }
     },
     /*
     preSerialization: (request, reply, payload, done) => {

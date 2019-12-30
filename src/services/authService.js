@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 const env_prefix = process.env.JWT_PREFIX;
 const env_secret = process.env.JWT_SECRET;
 
-const getToken = params => {
-    return jwt.sign({ data: params }, env_secret, { expiresIn: '24h' });
+const getToken = username => {
+    return jwt.sign({ username: username }, env_secret, { expiresIn: '24h' });
 };
 
 const checkRequest = request => {

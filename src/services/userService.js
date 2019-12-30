@@ -1,7 +1,7 @@
 const { query } = require('../db/pg');
 
-async function getUser(request, reply) {
-    const res = await query('SELECT * from ff_users where id=$1', [request.params.id]);
+async function getUserInfo(username) {
+    const res = await query('SELECT * from ff_users where username=$1', [username]);
     return {
         rowCount: res.rowCount,
         rows: res.rows,
@@ -9,5 +9,5 @@ async function getUser(request, reply) {
 }
 
 module.exports = {
-    getUser,
+    getUserInfo,
 };
