@@ -10,9 +10,9 @@ const userRoutes = {
         headers: {
             type: 'object',
             properties: {
-                'authorization': { type: 'string' }
+                authorization: { type: 'string' },
             },
-            required: ['authorization']
+            required: ['authorization'],
         },
         response: {
             200: {
@@ -26,7 +26,6 @@ const userRoutes = {
     },
 
     onRequest: (request, reply, done) => {
-
         const res = authService.checkRequest(request);
         console.log(res);
         if (res.success === false) {

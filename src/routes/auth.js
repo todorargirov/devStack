@@ -9,7 +9,7 @@ const authRoutes = {
         querystring: {
             type: 'object',
             properties: {
-                username: { type: 'string' }
+                username: { type: 'string' },
             },
             required: ['username'],
         },
