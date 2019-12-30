@@ -1,5 +1,6 @@
 const ping = require('./ping');
 const users = require('./users');
+const auth = require('./auth');
 
 /**
  * This function initializes endpoints based on the full route declaration. One endpoint per REST method.
@@ -60,6 +61,7 @@ function initializeEndpoint(fastify, routeParams) {
 
 async function routes(fastify) {
     initializeEndpoint(fastify, ping);
+    initializeEndpoint(fastify, auth);
     initializeEndpoint(fastify, users);
 }
 

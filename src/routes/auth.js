@@ -1,41 +1,34 @@
-const { getUser } = require('../services/userService');
 const authService = require('../services/authService');
 
-const url = '/users/:id';
+const url = '/auth';
 
-const userRoutes = {
+const authRoutes = {
     methods: ['GET'],
     url: url,
     schema: {
-        headers: {
+        querystring: {
             type: 'object',
             properties: {
-                'authorization': { type: 'string' }
+                username: { type: 'string' }
             },
-            required: ['authorization']
+            required: ['username'],
         },
         response: {
             200: {
                 type: 'object',
                 properties: {
-                    rowCount: { type: 'integer' },
-                    rows: {},
+                    token: { type: 'string' },
                 },
             },
         },
     },
 
+    /*
     onRequest: (request, reply, done) => {
 
-        const res = authService.checkRequest(request);
-        console.log(res);
-        if (res.success === false) {
-            reply.code(401);
-            reply.send(res);
-        }
-        done();
+
     },
-    /*
+    
     preParsing: (request, reply, done) => {
         console.log(`${url}:preParsing`)
         done()
@@ -57,9 +50,9 @@ const userRoutes = {
         // then, take what params are needed and pass to the service
         //const params = {};
         // wait for the service processing
-        const res = await getUser(request, reply);
         //send the reply
-        reply.send(res);
+        const token = authService.getToken(request.query.username);
+        reply.send({ token: token });
     },
     /*
     preSerialization: (request, reply, payload, done) => {
@@ -79,4 +72,4 @@ const userRoutes = {
     */
 };
 
-module.exports = [userRoutes];
+module.exports = [authRoutes];
