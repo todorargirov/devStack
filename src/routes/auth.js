@@ -25,13 +25,13 @@ const authRoute = {
     },
 
     handler: async (request, reply) => {
-        const userInfo = await userService.getUserInfo(request.query.username)
+        const userInfo = await userService.getUserInfo(request.query.username);
         if (userInfo) {
             const token = authService.getToken(userInfo);
             reply.send({ token: token });
         }
         reply.code(401);
-        reply.send({ success: false, data: '401 Not Authorized' })
+        reply.send({ success: false, data: '401 Not Authorized' });
     },
 };
 

@@ -11,7 +11,6 @@ const auth = require('./auth');
  */
 function initializeEndpoint(fastify, routeParams) {
     routeParams.map(routeParam => {
-
         fastify.route({
             // The REST method to register
             method: routeParam.method,
@@ -55,7 +54,6 @@ function initializeEndpoint(fastify, routeParams) {
 
             //prefixTrailingSlash: routeParam.prefixTrailingSlash || '',
         });
-
     });
 }
 

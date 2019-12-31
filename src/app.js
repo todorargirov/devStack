@@ -3,7 +3,7 @@ const db = require('./db/pg');
 
 function start() {
     // Initialize app
-    const fastify = require('fastify')({ logger: { level: 'debug', /* file: './logs/app.log' */ } });
+    const fastify = require('fastify')({ logger: { level: 'debug' /* file: './logs/app.log' */ } });
     const routes = require('./routes');
 
     // Initialize db

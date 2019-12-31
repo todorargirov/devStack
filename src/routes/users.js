@@ -22,7 +22,7 @@ const userRoute = {
                     user_type: { type: 'string' },
                     date_created: { type: 'string', format: 'date' },
                     date_updated: { type: 'string', format: 'date' },
-                    date_deleted: { type: 'string', format: 'date' }
+                    date_deleted: { type: 'string', format: 'date' },
                 },
             },
         },

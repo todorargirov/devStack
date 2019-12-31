@@ -16,5 +16,5 @@ const config = {
 
     JWT_PREFIX: process.env.JWT_PREFIX,
     JWT_SECRET: process.env.JWT_SECRET,
-}
+};
 module.exports = config;
