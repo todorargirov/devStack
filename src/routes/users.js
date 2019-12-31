@@ -14,7 +14,7 @@ const verifyToken = (request, reply, done) => {
         request.tokenPayload = res.data.payload;
     }
     done();
-}
+};
 
 const userSchema = {
     user_name: { type: 'string' },
@@ -22,7 +22,7 @@ const userSchema = {
     date_created: { type: 'string', format: 'date' },
     date_updated: { type: 'string', format: 'date' },
     date_deleted: { type: 'string', format: 'date' },
-}
+};
 
 const getUserListRoute = {
     method: 'GET',
@@ -34,9 +34,9 @@ const getUserListRoute = {
                 items: {
                     type: 'object',
                     properties: userSchema,
-                }
-            }
-        }
+                },
+            },
+        },
     },
 
     onRequest: (request, reply, done) => {
@@ -49,7 +49,6 @@ const getUserListRoute = {
         }
     },
 };
-
 
 const createUserRoute = {
     method: 'POST',
