@@ -2,7 +2,7 @@ const userService = require('../services/userService');
 const authService = require('../services/authService');
 
 const getUserUrl = '/user/:username';
-const createUserUrl = '/user'
+const createUserUrl = '/user';
 
 const createUserRoute = {
     method: 'POST',
@@ -14,7 +14,7 @@ const createUserRoute = {
             properties: {
                 user_name: { type: 'string' },
                 user_type: { type: 'string' },
-            }
+            },
         },
         response: {
             201: {
@@ -23,15 +23,15 @@ const createUserRoute = {
                     user_name: { type: 'string' },
                     user_type: { type: 'string' },
                     date_created: { type: 'string', format: 'date' },
-                }
-            }
-        }
+                },
+            },
+        },
     },
     handler: async (request, reply) => {
         const userExists = await userService.getUserInfo(request.body.user_name);
         if (userExists) {
-            reply.code(400)
-            reply.send({ success: false, data: '400 Bad Request / User already exists' })
+            reply.code(400);
+            reply.send({ success: false, data: '400 Bad Request / User already exists' });
         } else {
             const createdUserInfo = await userService.createUser(request.body.user_name, request.body.user_type);
             if (createdUserInfo) {
@@ -43,9 +43,8 @@ const createUserRoute = {
                 });
             }
         }
-
-    }
-}
+    },
+};
 const getUserRoute = {
     method: 'GET',
     url: getUserUrl,

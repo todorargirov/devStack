@@ -11,7 +11,6 @@ async function getUserInfo(user_name) {
 }
 
 async function createUser(user_name, user_type) {
-
     const date_created = new Date();
     const isCreated = await query(sqlCreateUser, [user_name, user_type, date_created]);
     if (isCreated.rowCount === 1) {
@@ -19,9 +18,10 @@ async function createUser(user_name, user_type) {
             user_name,
             user_type,
             date_created,
-        }
+        };
     }
 }
 module.exports = {
-    getUserInfo, createUser
+    getUserInfo,
+    createUser,
 };
