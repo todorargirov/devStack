@@ -1,11 +1,99 @@
-const { getUserInfo } = require('../services/userService');
+const userService = require('../services/userService');
 const authService = require('../services/authService');
 
-const url = '/users/:username';
+const getUserUrl = '/users/:username';
+const getUserListUrl = '/users';
+const createUserUrl = '/users';
 
-const userRoutes = {
-    methods: ['GET'],
-    url: url,
+const verifyToken = (request, reply, done) => {
+    const res = authService.checkRequest(request.headers['authorization']);
+    if (res.success === false) {
+        reply.code(401);
+        reply.send(res);
+    } else {
+        request.tokenPayload = res.data.payload;
+    }
+    done();
+};
+
+const userSchema = {
+    user_name: { type: 'string' },
+    user_type: { type: 'string' },
+    date_created: { type: 'string', format: 'date' },
+    date_updated: { type: 'string', format: 'date' },
+    date_deleted: { type: 'string', format: 'date' },
+};
+
+const getUserListRoute = {
+    method: 'GET',
+    url: getUserListUrl,
+    schema: {
+        response: {
+            200: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: userSchema,
+                },
+            },
+        },
+    },
+
+    onRequest: (request, reply, done) => {
+        verifyToken(request, reply, done);
+    },
+    handler: async (request, reply) => {
+        const userList = await userService.getUserInfoList();
+        if (userList) {
+            reply.send(userList);
+        }
+    },
+};
+
+const createUserRoute = {
+    method: 'POST',
+    url: createUserUrl,
+    schema: {
+        body: {
+            type: 'object',
+            required: ['user_name', 'user_type'],
+            properties: {
+                user_name: { type: 'string' },
+                user_type: { type: 'string' },
+            },
+        },
+        response: {
+            201: {
+                type: 'object',
+                properties: {
+                    user_name: userSchema.user_name,
+                    user_type: userSchema.user_type,
+                    date_created: userSchema.date_created,
+                },
+            },
+        },
+    },
+    handler: async (request, reply) => {
+        const userExists = await userService.getUserInfo(request.body.user_name);
+        if (userExists) {
+            reply.code(400);
+            reply.send({ success: false, data: '400 Bad Request / User already exists' });
+        } else {
+            const createdUserInfo = await userService.createUser(request.body.user_name, request.body.user_type);
+            if (createdUserInfo) {
+                reply.code(201);
+                reply.send({
+                    user_name: createdUserInfo.user_name,
+                    user_type: createdUserInfo.user_type,
+                    date_created: createdUserInfo.date_created,
+                });
+            }
+        }
+    },
+};
+const getUserRoute = {
+    method: 'GET',
+    url: getUserUrl,
     schema: {
         headers: {
             type: 'object',
@@ -17,23 +105,13 @@ const userRoutes = {
         response: {
             200: {
                 type: 'object',
-                properties: {
-                    rowCount: { type: 'integer' },
-                    rows: {},
-                },
+                properties: userSchema,
             },
         },
     },
 
     onRequest: (request, reply, done) => {
-        const res = authService.checkRequest(request);
-        if (res.success === false) {
-            reply.code(401);
-            reply.send(res);
-        } else {
-            request.tokenPayload = res.data;
-        }
-        done();
+        verifyToken(request, reply, done);
     },
     /*
     preParsing: (request, reply, done) => {
@@ -59,9 +137,8 @@ const userRoutes = {
         // wait for the service processing
 
         // check the token info vs the params
-        if (request.tokenPayload.username === request.params.username) {
-            const res = await getUserInfo(request.params.username);
-            //send the reply
+        if (request.tokenPayload.user_name === request.params.username) {
+            const res = await userService.getUserInfo(request.params.username);
             reply.send(res);
         } else {
             reply.code(401);
@@ -86,4 +163,4 @@ const userRoutes = {
     */
 };
 
-module.exports = [userRoutes];
+module.exports = [getUserRoute, getUserListRoute, createUserRoute];

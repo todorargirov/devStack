@@ -2,8 +2,8 @@ const { getPingService } = require('../services/pingService');
 
 const url = '/ping';
 
-const pingRoutes = {
-    methods: ['GET', 'POST'],
+const pingRoute = {
+    method: 'GET',
     url: url,
     schema: {
         response: {
@@ -65,4 +65,4 @@ const pingRoutes = {
     */
 };
 
-module.exports = [pingRoutes];
+module.exports = [pingRoute];

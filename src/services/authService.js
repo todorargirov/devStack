@@ -1,19 +1,20 @@
-require('dotenv').config();
+const config = require('../config');
 const jwt = require('jsonwebtoken');
-const env_prefix = process.env.JWT_PREFIX;
-const env_secret = process.env.JWT_SECRET;
 
-const getToken = username => {
-    return jwt.sign({ username: username }, env_secret, { expiresIn: '24h' });
+const env_prefix = config.JWT_PREFIX;
+const env_secret = config.JWT_SECRET;
+
+const getToken = payload => {
+    return jwt.sign({ payload: payload }, env_secret, { expiresIn: '24h' });
 };
 
-const checkRequest = request => {
+const checkRequest = authorization => {
     // check headers
-    if (!request.headers['authorization']) {
+    if (!authorization) {
         return { success: false, data: '401 Not Authorized' };
     }
 
-    const [prefix, token] = request.headers['authorization'].split(' ');
+    const [prefix, token] = authorization.split(' ');
 
     if (prefix !== env_prefix) {
         return { success: false, data: '401 Not Authorized' };
@@ -22,7 +23,6 @@ const checkRequest = request => {
         const decoded = jwt.verify(token, env_secret);
         return { sucess: true, data: decoded };
     } catch (err) {
-        request.log.info(' Error decoding token : ', err);
         return { success: false, data: [err.name, err.message].join(':') };
     }
 };
