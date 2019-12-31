@@ -1,11 +1,54 @@
-const { getUserInfo } = require('../services/userService');
+const userService = require('../services/userService');
 const authService = require('../services/authService');
 
-const url = '/user/:username';
+const getUserUrl = '/user/:username';
+const createUserUrl = '/user'
 
-const userRoute = {
+const createUserRoute = {
+    method: 'POST',
+    url: createUserUrl,
+    schema: {
+        body: {
+            type: 'object',
+            required: ['user_name', 'user_type'],
+            properties: {
+                user_name: { type: 'string' },
+                user_type: { type: 'string' },
+            }
+        },
+        response: {
+            201: {
+                type: 'object',
+                properties: {
+                    user_name: { type: 'string' },
+                    user_type: { type: 'string' },
+                    date_created: { type: 'string', format: 'date' },
+                }
+            }
+        }
+    },
+    handler: async (request, reply) => {
+        const userExists = await userService.getUserInfo(request.body.user_name);
+        if (userExists) {
+            reply.code(400)
+            reply.send({ success: false, data: '400 Bad Request / User already exists' })
+        } else {
+            const createdUserInfo = await userService.createUser(request.body.user_name, request.body.user_type);
+            if (createdUserInfo) {
+                reply.code(201);
+                reply.send({
+                    user_name: createdUserInfo.user_name,
+                    user_type: createdUserInfo.user_type,
+                    date_created: createdUserInfo.date_created,
+                });
+            }
+        }
+
+    }
+}
+const getUserRoute = {
     method: 'GET',
-    url: url,
+    url: getUserUrl,
     schema: {
         headers: {
             type: 'object',
@@ -63,7 +106,7 @@ const userRoute = {
 
         // check the token info vs the params
         if (request.tokenPayload.user_name === request.params.username) {
-            const res = await getUserInfo(request.params.username);
+            const res = await userService.getUserInfo(request.params.username);
             reply.send(res);
         } else {
             reply.code(401);
@@ -88,4 +131,4 @@ const userRoute = {
     */
 };
 
-module.exports = [userRoute];
+module.exports = [getUserRoute, createUserRoute];

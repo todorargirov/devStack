@@ -29,9 +29,10 @@ const authRoute = {
         if (userInfo) {
             const token = authService.getToken(userInfo);
             reply.send({ token: token });
+        } else {
+            reply.code(401);
+            reply.send({ success: false, data: '401 Not Authorized' });
         }
-        reply.code(401);
-        reply.send({ success: false, data: '401 Not Authorized' });
     },
 };
 
