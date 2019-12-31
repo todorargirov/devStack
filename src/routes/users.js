@@ -1,8 +1,55 @@
 const userService = require('../services/userService');
 const authService = require('../services/authService');
 
-const getUserUrl = '/user/:username';
-const createUserUrl = '/user';
+const getUserUrl = '/users/:username';
+const getUserListUrl = '/users';
+const createUserUrl = '/users';
+
+const verifyToken = (request, reply, done) => {
+    const res = authService.checkRequest(request.headers['authorization']);
+    if (res.success === false) {
+        reply.code(401);
+        reply.send(res);
+    } else {
+        request.tokenPayload = res.data.payload;
+    }
+    done();
+}
+
+const userSchema = {
+    user_name: { type: 'string' },
+    user_type: { type: 'string' },
+    date_created: { type: 'string', format: 'date' },
+    date_updated: { type: 'string', format: 'date' },
+    date_deleted: { type: 'string', format: 'date' },
+}
+
+const getUserListRoute = {
+    method: 'GET',
+    url: getUserListUrl,
+    schema: {
+        response: {
+            200: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: userSchema,
+                }
+            }
+        }
+    },
+
+    onRequest: (request, reply, done) => {
+        verifyToken(request, reply, done);
+    },
+    handler: async (request, reply) => {
+        const userList = await userService.getUserInfoList();
+        if (userList) {
+            reply.send(userList);
+        }
+    },
+};
+
 
 const createUserRoute = {
     method: 'POST',
@@ -20,9 +67,9 @@ const createUserRoute = {
             201: {
                 type: 'object',
                 properties: {
-                    user_name: { type: 'string' },
-                    user_type: { type: 'string' },
-                    date_created: { type: 'string', format: 'date' },
+                    user_name: userSchema.user_name,
+                    user_type: userSchema.user_type,
+                    date_created: userSchema.date_created,
                 },
             },
         },
@@ -59,26 +106,13 @@ const getUserRoute = {
         response: {
             200: {
                 type: 'object',
-                properties: {
-                    user_name: { type: 'string' },
-                    user_type: { type: 'string' },
-                    date_created: { type: 'string', format: 'date' },
-                    date_updated: { type: 'string', format: 'date' },
-                    date_deleted: { type: 'string', format: 'date' },
-                },
+                properties: userSchema,
             },
         },
     },
 
     onRequest: (request, reply, done) => {
-        const res = authService.checkRequest(request.headers['authorization']);
-        if (res.success === false) {
-            reply.code(401);
-            reply.send(res);
-        } else {
-            request.tokenPayload = res.data.payload;
-        }
-        done();
+        verifyToken(request, reply, done);
     },
     /*
     preParsing: (request, reply, done) => {
@@ -130,4 +164,4 @@ const getUserRoute = {
     */
 };
 
-module.exports = [getUserRoute, createUserRoute];
+module.exports = [getUserRoute, getUserListRoute, createUserRoute];

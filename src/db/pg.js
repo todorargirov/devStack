@@ -48,12 +48,11 @@ async function queryByClient(queryString, queryParams) {
 
     const client = await pool.connect();
     let res = null;
-    let start, end, duration;
+    let start, duration;
     try {
         start = Date.now();
         res = await client.query(queryString, queryParams);
-        end = Date.now();
-        duration = end - start;
+        duration = Date.now() - start;
     } catch (err) {
         logger.error(err);
     } finally {

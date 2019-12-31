@@ -1,5 +1,5 @@
 const { query } = require('../db/pg');
-const { sqlGetUserInfo, sqlCreateUser } = require('./sql/userSQL');
+const { sqlGetUserInfo, sqlGetUserInfoList, sqlCreateUser } = require('./sql/userSQL');
 
 async function getUserInfo(user_name) {
     const userInfo = await query(sqlGetUserInfo, [user_name]);
@@ -19,9 +19,21 @@ async function createUser(user_name, user_type) {
             user_type,
             date_created,
         };
+    } else {
+        return false;
+    }
+}
+
+async function getUserInfoList() {
+    const list = await query(sqlGetUserInfoList, []);
+    if (list.rowCount > 0) {
+        return list.rows;
+    } else {
+        return false;
     }
 }
 module.exports = {
     getUserInfo,
+    getUserInfoList,
     createUser,
 };
