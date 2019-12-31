@@ -11,51 +11,51 @@ const auth = require('./auth');
  */
 function initializeEndpoint(fastify, routeParams) {
     routeParams.map(routeParam => {
-        routeParam.methods.forEach(m => {
-            fastify.route({
-                // The REST method to register
-                method: m,
-                // The URL of the endpoint
-                url: routeParam.url,
-                // The schema that validates the request and response data schema
-                // schema: { body: {}, querystring: {}, params: {}, response: {}}
-                schema: routeParam.schema,
 
-                // The handler function that processes the request and sends the response
-                handler: routeParam.handler,
+        fastify.route({
+            // The REST method to register
+            method: routeParam.method,
+            // The URL of the endpoint
+            url: routeParam.url,
+            // The schema that validates the request and response data schema
+            // schema: { body: {}, querystring: {}, params: {}, response: {}}
+            schema: routeParam.schema,
 
-                // pre_ and on_ functions run according to lifeCycle. Can be an Array [func1, func2]
-                onRequest: routeParam.onRequest,
+            // The handler function that processes the request and sends the response
+            handler: routeParam.handler,
 
-                onSend: routeParam.onSend,
+            // pre_ and on_ functions run according to lifeCycle. Can be an Array [func1, func2]
+            onRequest: routeParam.onRequest,
 
-                onResponse: routeParam.onResponse,
+            onSend: routeParam.onSend,
 
-                preParsing: routeParam.preParsing,
+            onResponse: routeParam.onResponse,
 
-                preValidation: routeParam.preValidation,
+            preParsing: routeParam.preParsing,
 
-                preHandler: routeParam.preHandler,
+            preValidation: routeParam.preValidation,
 
-                preSerialization: routeParam.preSerialization,
+            preHandler: routeParam.preHandler,
 
-                //attachValidation: routeParam.attachValidation || {},
+            preSerialization: routeParam.preSerialization,
 
-                //schemaCompiler: routeParam.schemaCompiler || {},
+            //attachValidation: routeParam.attachValidation || {},
 
-                //bodyLimit: routeParam.bodyLimit || 1048576,
+            //schemaCompiler: routeParam.schemaCompiler || {},
 
-                //logLevel: routeParam.logLevel || {},
+            //bodyLimit: routeParam.bodyLimit || 1048576,
 
-                //logSerializers: routeParam.logSerializers || {},
+            //logLevel: routeParam.logLevel || {},
 
-                config: routeParam.config || {},
+            //logSerializers: routeParam.logSerializers || {},
 
-                //version: routeParam.version || 'dev',
+            config: routeParam.config || {},
 
-                //prefixTrailingSlash: routeParam.prefixTrailingSlash || '',
-            });
+            //version: routeParam.version || 'dev',
+
+            //prefixTrailingSlash: routeParam.prefixTrailingSlash || '',
         });
+
     });
 }
 

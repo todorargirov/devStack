@@ -1,11 +1,13 @@
 const { query } = require('../db/pg');
+const { sqlGetUserInfo } = require('./sql/userSQL');
 
 async function getUserInfo(username) {
-    const res = await query('SELECT * from ff_users where username=$1', [username]);
-    return {
-        rowCount: res.rowCount,
-        rows: res.rows,
-    };
+    const res = await query(sqlGetUserInfo, [username]);
+    if (res.rowCount === 1) {
+        return res.rows[0];
+    } else {
+        return false;
+    }
 }
 
 module.exports = {

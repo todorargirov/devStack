@@ -1,10 +1,10 @@
 const { getUserInfo } = require('../services/userService');
 const authService = require('../services/authService');
 
-const url = '/users/:username';
+const url = '/user/:username';
 
-const userRoutes = {
-    methods: ['GET'],
+const userRoute = {
+    method: 'GET',
     url: url,
     schema: {
         headers: {
@@ -18,20 +18,23 @@ const userRoutes = {
             200: {
                 type: 'object',
                 properties: {
-                    rowCount: { type: 'integer' },
-                    rows: {},
+                    user_name: { type: 'string' },
+                    user_type: { type: 'string' },
+                    date_created: { type: 'string', format: 'date' },
+                    date_updated: { type: 'string', format: 'date' },
+                    date_deleted: { type: 'string', format: 'date' }
                 },
             },
         },
     },
 
     onRequest: (request, reply, done) => {
-        const res = authService.checkRequest(request);
+        const res = authService.checkRequest(request.headers['authorization']);
         if (res.success === false) {
             reply.code(401);
             reply.send(res);
         } else {
-            request.tokenPayload = res.data;
+            request.tokenPayload = res.data.payload;
         }
         done();
     },
@@ -59,9 +62,8 @@ const userRoutes = {
         // wait for the service processing
 
         // check the token info vs the params
-        if (request.tokenPayload.username === request.params.username) {
+        if (request.tokenPayload.user_name === request.params.username) {
             const res = await getUserInfo(request.params.username);
-            //send the reply
             reply.send(res);
         } else {
             reply.code(401);
@@ -86,4 +88,4 @@ const userRoutes = {
     */
 };
 
-module.exports = [userRoutes];
+module.exports = [userRoute];

@@ -1,9 +1,9 @@
-require('dotenv').config();
+const config = require('./config');
 const db = require('./db/pg');
 
 function start() {
     // Initialize app
-    const fastify = require('fastify')({ logger: { level: 'debug' } });
+    const fastify = require('fastify')({ logger: { level: 'debug', /* file: './logs/app.log' */ } });
     const routes = require('./routes');
 
     // Initialize db
@@ -20,7 +20,7 @@ function start() {
         console.log(fastify.printRoutes());
     });
 
-    fastify.listen(process.env.PORT, process.env.HOST, (err, address) => {
+    fastify.listen(config.PORT, config.HOST, (err, address) => {
         if (err) {
             fastify.log.error(err);
             process.exit(1);

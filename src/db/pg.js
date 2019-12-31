@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const config = require('../config');
 
 let pool;
 let logger;
@@ -7,14 +8,14 @@ let callCount = 0;
 const testQuery = 'SELECT NOW() as now';
 
 const connectOptions = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_DATABASE,
-    max: process.env.DB_MAX_POOL_SIZE,
-    connectionTimeoutMillis: process.env.DB_CONNECTION_TIMEOUT_MILLIS,
-    idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MILLIS,
+    user: config.DB_USER,
+    password: config.DB_PASSWORD,
+    host: config.DB_HOST,
+    port: config.DB_PORT,
+    database: config.DB_DATABASE,
+    max: config.DB_MAX_POOL_SIZE,
+    connectionTimeoutMillis: config.DB_CONNECTION_TIMEOUT_MILLIS,
+    idleTimeoutMillis: config.DB_IDLE_TIMEOUT_MILLIS,
 };
 
 const init = loggerInstance => {
